@@ -1,19 +1,42 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Fragment } from 'react'
+import { AppLoading } from 'expo'
+import { StatusBar } from 'react-native'
+import { Roboto_400Regular, Roboto_500Medium, Roboto_700Bold } from '@expo-google-fonts/roboto'
+import { Ubuntu_700Bold, useFonts } from '@expo-google-fonts/ubuntu'
+import * as Font from 'expo-font'
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-    </View>
-  );
+import Routes from './src/routes'
+
+let customFonts = {
+  Roboto_400Regular, 
+  Roboto_500Medium,
+  Roboto_700Bold,
+  Ubuntu_700Bold
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default class App extends React.Component {
+  state = {
+    fontsLoaded: false
+  }
+
+  async _loadFontsAsync() {
+    await Font.loadAsync(customFonts)
+    this.setState({ fontsLoaded: true})
+  }
+  componentDidMount() {
+    this._loadFontsAsync()
+  }
+
+  render() {
+    if (this.state.fontsLoaded) {
+      return (
+        <Fragment>
+          <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
+          <Routes />
+        </Fragment>
+      );
+    } else {
+      return <AppLoading />
+    }
+  }
+}
